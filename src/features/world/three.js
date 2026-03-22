@@ -1,9 +1,9 @@
 import gsap from 'gsap'
 import * as THREE from 'three'
-import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
+// import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
-import disp_frag from './disp_shader'
-import vert from './vertexShader'
+import disp_frag from './shaders/fragShader'
+import vert from './shaders/vertexShader'
 
 function world() {
   function githubToJsDelivr(permalink) {
@@ -15,7 +15,7 @@ function world() {
   const canvas = document.getElementById('omy-canvas')
   // Scene
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x080808)
+  scene.background = new THREE.Color(0x060606)
 
   // Camera
   const camera = new THREE.PerspectiveCamera(
@@ -36,16 +36,16 @@ function world() {
   renderer.setClearColor(0x000000, 0)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8))
 
-  // Background
-  const loader = new THREE.TextureLoader()
-  let plane = null
-  loader.load(
-    githubToJsDelivr(
-      'https://github.com/illysito/teoriadelkaos/blob/de8b6cce72ec738387aa41fbe097f74cd8feff49/imgs/vivi.jpg'
-    ),
+  // Main Image
+  const imgLoader = new THREE.TextureLoader()
+  let imgPlane = null
+  imgLoader.load(
     // githubToJsDelivr(
-    //   ' https://github.com/illysito/teoriadelkaos/blob/8053c72f3b687c2a525e94a1c4ecec44f7258ba4/imgs/vivimasked.png'
+    //   'https://github.com/illysito/teoriadelkaos/blob/de8b6cce72ec738387aa41fbe097f74cd8feff49/imgs/vivi.jpg'
     // ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/1e8b8592e633968e12a5df2fb697411a2a0092fe/imgs/Omy4.jpg'
+    ),
     (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace
       // texture.colorSpace = THREE.SRGBColorSpace
@@ -76,24 +76,93 @@ function world() {
         },
       })
 
-      plane = new THREE.Mesh(planeGeometry, planeMaterial)
+      imgPlane = new THREE.Mesh(planeGeometry, planeMaterial)
 
       // move it behind your sphere
       let planeScale = 1.6 * 3
-      plane.position.z = 0
-      plane.scale.set(planeScale, planeScale, planeScale)
-      scene.add(plane)
+      imgPlane.position.z = 0
+      imgPlane.scale.set(planeScale, planeScale, planeScale)
+      scene.add(imgPlane)
     }
   )
 
+  // // Type
+  // const typeLoader = new THREE.TextureLoader()
+  // let typePlane = null
+  // typeLoader.load(
+  //   githubToJsDelivr(
+  //     'https://github.com/illysito/teoriadelkaos/blob/510b39ea59dd7bd25e86b5438357a6e5b51b931d/imgs/omytype.png'
+  //   ),
+  //   (texture) => {
+  //     texture.colorSpace = THREE.SRGBColorSpace
+  //     // texture.colorSpace = THREE.SRGBColorSpace
+  //     texture.minFilter = THREE.LinearFilter
+  //     texture.magFilter = THREE.LinearFilter
+  //     texture.generateMipmaps = false
+
+  //     // const distance = 2 // distance from camera
+  //     // const fov = camera.fov * (Math.PI / 180)
+  //     // const height = 2 * Math.tan(fov / 2) * distance
+  //     // const width = height * camera.aspect
+
+  //     const planeGeometry = new THREE.PlaneGeometry(5, 1)
+  //     // const planeMaterial = new THREE.MeshBasicMaterial({
+  //     //   map: texture,
+  //     //   alphaTest: 0.8,
+  //     // })
+  //     const planeMaterial = new THREE.ShaderMaterial({
+  //       fragmentShader: disp_frag,
+  //       vertexShader: vert,
+  //       uniforms: {
+  //         u_time: { value: 0 },
+  //         u_resolution: { value: new THREE.Vector2(5, 1) },
+  //         u_offset: { value: 1 },
+  //         u_mouseX: { value: 0 },
+  //         u_mouseY: { value: 0 },
+  //         u_img: { value: texture },
+  //       },
+  //     })
+
+  //     typePlane = new THREE.Mesh(planeGeometry, planeMaterial)
+
+  //     // move it behind your sphere
+  //     let planeScale = 2
+  //     typePlane.position.z = 1
+  //     typePlane.position.y = -2
+  //     typePlane.scale.set(planeScale, planeScale, planeScale)
+  //     scene.add(typePlane)
+  //   }
+  // )
+
   // Light
-  const light = new THREE.DirectionalLight(0xffffff, 1)
-  light.position.set(1, 1, 20)
-  scene.add(light)
+  // const light = new THREE.DirectionalLight(0xffffff, 1)
+  // light.position.set(1, 1, 20)
+  const ambient = new THREE.AmbientLight(0xffffff, 0.3)
+  scene.add(ambient)
+  // scene.add(light)
 
   // CUBE
   // const boxGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6, 1, 1, 1)
-  const boxGeo = new RoundedBoxGeometry(1, 1, 1, 8, 0.02)
+  // const boxGeo = new RoundedBoxGeometry(1, 1, 1, 8, 0.02)
+  // const boxGeo = new THREE.CylinderGeometry(1, 0.2, 0.1, 18, 8)
+
+  const radius = 1
+
+  const shape = new THREE.Shape()
+  shape.absarc(0, 0, radius, 0, Math.PI * 2, false)
+
+  const boxGeo = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.05,
+    curveSegments: 64,
+
+    bevelEnabled: true,
+    bevelThickness: 0.02,
+    bevelSize: 0.02,
+    bevelSegments: 8,
+  })
+
+  boxGeo.center()
+
   const material = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     // emissie: new Color(0x00ff00),
@@ -101,7 +170,7 @@ function world() {
     emissive: 0x000000,
     emissiveIntensity: 0.4,
     transmission: 1.0,
-    thickness: 0.42,
+    thickness: 0.82,
     ior: 2.5,
     roughness: 0.05,
     metalness: 0.0,
@@ -117,7 +186,7 @@ function world() {
   })
   const box = new THREE.Mesh(boxGeo, material)
 
-  let boxScale = 0.8
+  let boxScale = 0.58
   box.scale.set(boxScale, boxScale, boxScale)
 
   const group = new THREE.Group()
@@ -141,8 +210,13 @@ function world() {
   let currentX = 0
   let currentY = 0
 
+  let scroll = 0
+
   let animationId = null
   let isVisible = false
+
+  let rotY = 0
+  let rotYVel = 0.08
 
   function lerp(a, b, t) {
     return a + (b - a) * t
@@ -153,14 +227,23 @@ function world() {
     currentY = lerp(currentY, targetY, 0.008)
 
     counter += 0.002
-    if (plane) {
-      plane.material.uniforms.u_time.value = counter
-      plane.material.uniforms.u_mouseX.value = currentX
-      plane.material.uniforms.u_mouseY.value = currentY
+
+    // decay velocity
+    if (counter > 0.312) {
+      rotYVel *= 0.996
+      rotY += rotYVel
     }
-    group.rotation.y = counter + 0.2 * currentX
-    group.rotation.x = 0.8 * counter + 0.2 * currentY
+
+    if (imgPlane) {
+      imgPlane.material.uniforms.u_time.value = counter
+      imgPlane.material.uniforms.u_mouseX.value = currentX
+      imgPlane.material.uniforms.u_mouseY.value = currentY
+    }
+    group.rotation.y = 0.2 * counter + 0.2 * currentX - 0.0008 * scroll
+    group.rotation.x = 0.8 * counter + 0.2 * currentY + 0.002 * scroll + rotY
     group.rotation.z = 0.6 * counter - 0.2 * currentX * currentY
+    group.position.x = 1.2 * currentX
+    group.position.y = -1.2 * currentY
     renderer.render(scene, camera)
     animationId = requestAnimationFrame(animate)
   }
@@ -201,6 +284,10 @@ function world() {
     targetX = gsap.utils.mapRange(0, window.innerWidth, -0.52, 0.52, mouseX)
 
     targetY = gsap.utils.mapRange(0, window.innerHeight, -0.48, 0.48, mouseY)
+  })
+
+  window.addEventListener('scroll', () => {
+    scroll = window.scrollY
   })
 
   // Resize

@@ -53,8 +53,8 @@ void main()
   vec2 blockCoords = vec2(xBlocks, yBlocks);
   
   vec2 distortionCoords = vec2(
-    blockCoords.x + 0.08 * sin(u_time) - 0.1 * u_mouseX,
-    blockCoords.y + 0.12 * cos(u_time) + 0.1 * u_mouseY
+    coords.x + 0.02 * sin(u_time) - 0.1 * u_mouseX + 0.12,
+    coords.y + 0.04 * cos(u_time) + 0.1 * u_mouseY
   );
 
   // NOISE
@@ -62,10 +62,28 @@ void main()
   float noise = random(uv + sin(u_time));
   float noiseFactor = 0.02;
 
-  vec4 img = texture2D(u_img, distortionCoords);
+  vec4 imgRed = texture2D(u_img, vec2(distortionCoords.x + 0.02 * u_mouseX, distortionCoords.y + 0.005 * sin(u_time)));
+  imgRed.r *= 1.0;
+  imgRed.g = 0.0;
+  imgRed.b = 0.0;
+
+  vec4 imgGreen = texture2D(u_img, vec2(distortionCoords.x, distortionCoords.y - 0.01 * u_mouseY));
+  imgGreen.r = 0.0;
+  imgGreen.g *= 1.0;
+  imgGreen.b = 0.0;
+
+  vec4 imgBlue = texture2D(u_img, vec2(distortionCoords.x - 0.012 * cos(u_time), distortionCoords.y));
+  imgBlue.r = 0.0;
+  imgBlue.g = 0.0;
+  imgBlue.b *= 1.0;
+
+  vec4 img = vec4(imgRed + imgGreen + imgBlue);
 
   img += noise * noiseFactor;
-  img.rgb *= 0.8;
+
+  float cubeBrightness = 0.8;
+  float cylinderBrightness = 1.0;
+  img.rgb *= cylinderBrightness;
 
   gl_FragColor = img;
 }
