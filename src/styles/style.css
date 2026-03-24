@@ -3,7 +3,17 @@
   height: 100svh;
 }
 
-.omy-canvas {
+#omy-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* .photo-canvas {
+  width: 100%;
+  height: 100svh;
+} */
+
+#photo-canvas {
   width: 100%;
   height: 100%;
 }

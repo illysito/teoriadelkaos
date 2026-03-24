@@ -25,6 +25,9 @@ async function runHomeFunctions() {
 
 async function runPhotoFunctions() {
   console.log('photo!')
+  const { default: worldPhoto } = await import('./features/world/photosWorld')
+
+  worldPhoto()
 }
 async function runFilmFunctions() {
   console.log('film!')

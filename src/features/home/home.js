@@ -10,7 +10,7 @@ function home() {
   const heroH = document.querySelector('.hero-h')
   const logoH = document.querySelector('.logo-h')
   const gallerySection = document.querySelector('.gallery__section')
-  const footerSection = document.querySelector('.footer__section')
+  // const footerSection = document.querySelector('.footer__section')
   // const flashOverlay = document.querySelector('.flash__overlay')
 
   window.addEventListener('pageIsPreloaded', () => {
@@ -70,15 +70,15 @@ function home() {
     },
   })
 
-  gsap.to(gallerySection, {
-    y: -100,
-    scrollTrigger: {
-      trigger: footerSection,
-      start: 'top bottom',
-      end: 'top top',
-      scrub: 1.5,
-    },
-  })
+  // gsap.to(gallerySection, {
+  //   y: -100,
+  //   scrollTrigger: {
+  //     trigger: footerSection,
+  //     start: 'top bottom',
+  //     end: 'top top',
+  //     scrub: 1.5,
+  //   },
+  // })
 
   // window.addEventListener('click', flash)
 }
