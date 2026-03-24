@@ -362,12 +362,12 @@ function worldHome() {
   window.addEventListener('transitionIsNeeded', () => {
     console.log('event received')
     gsap.to(imgPlane.material.uniforms.u_offset, {
-      delay: 0.2,
+      // delay: 0.2,
       value: 1,
       duration: 1.2,
     })
     gsap.to(imgPlane.position, {
-      delay: 0.2,
+      // delay: 0.2,
       x: -1,
       duration: 2.4,
       ease: 'power2.in',

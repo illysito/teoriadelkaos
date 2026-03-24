@@ -42,7 +42,43 @@ function worldPhoto() {
 
   const urls = [
     githubToJsDelivr(
-      'https://github.com/illysito/teoriadelkaos/blob/bccebb8d94c4d8193376fc104fbcdbd66d98818b/imgs/cloudsmoke.png'
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/pescaos.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/vivi2.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/cloudsmoke.png'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/lol.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/terrero.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/pescaos.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/terrero.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/lol.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/cloudsmoke.png'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/terrero.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/pescaos.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/cloudsmoke.png'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/terrero.jpg'
     ),
     githubToJsDelivr(
       'https://github.com/illysito/teoriadelkaos/blob/17cec003107d6d13a4556ed21aec386397d058b9/imgs/PerlinOmy.jpg'
@@ -57,7 +93,7 @@ function worldPhoto() {
       imgLoader.load(
         url,
         (texture) => {
-          texture.colorSpace = THREE.SRGBColorSpace
+          texture.colorSpace = THREE.LinearSRGBColorSpace
           texture.minFilter = THREE.LinearFilter
           texture.magFilter = THREE.LinearFilter
           texture.generateMipmaps = false
@@ -68,9 +104,12 @@ function worldPhoto() {
       )
     })
   }
+
+  let textures = []
   let imgPlane = null
 
-  Promise.all(urls.map(loadTexture)).then(([omy, perlin, bg]) => {
+  Promise.all(urls.map(loadTexture)).then((loadedTextures) => {
+    textures = loadedTextures
     const planeGeometry = new THREE.PlaneGeometry(0.75, 1)
 
     const planeMaterial = new THREE.ShaderMaterial({
@@ -79,13 +118,13 @@ function worldPhoto() {
       uniforms: {
         u_time: { value: 0 },
         u_resolution: { value: new THREE.Vector2(0.75, 1) },
-        u_offset: { value: 0.05 },
+        u_offset: { value: 1.0 },
         u_mouseX: { value: 0 },
         u_mouseY: { value: 0 },
 
-        u_img: { value: omy },
-        u_perlin: { value: perlin },
-        u_bg: { value: bg },
+        u_img: { value: textures[0] },
+        u_perlin: { value: textures[13] },
+        u_bg: { value: textures[14] },
 
         u_mix1: { value: 0.0 },
         u_mix2: { value: 0.0 },
@@ -93,10 +132,11 @@ function worldPhoto() {
     })
 
     imgPlane = new THREE.Mesh(planeGeometry, planeMaterial)
+    window.dispatchEvent(new Event('imagesAreLoaded'))
 
     const planeScale = 2.6 * 3
     imgPlane.position.z = 0
-    // imgPlane.position.x = -0.4
+    imgPlane.position.x = -0.4
     imgPlane.scale.set(planeScale, planeScale, planeScale)
 
     scene.add(imgPlane)
@@ -168,17 +208,31 @@ function worldPhoto() {
   })
 
   // Transition IN
-  window.addEventListener('pageIsPreloaded', () => {
+  window.addEventListener('imagesAreLoaded', () => {
     console.log('event received')
     gsap.to(imgPlane.material.uniforms.u_offset, {
+      delay: 0.2,
       value: 0,
+      duration: 2.4,
+    })
+    gsap.to(canvas, {
+      opacity: 1,
       duration: 1.2,
+      ease: 'power2.in',
     })
     gsap.to(imgPlane.position, {
       x: 0,
       duration: 2.4,
       ease: 'power2.inOut',
     })
+  })
+
+  // Image change
+  window.addEventListener('pictureHasChanged', (e) => {
+    const index = e.detail.index
+    if (imgPlane && textures) {
+      imgPlane.material.uniforms.u_img.value = textures[index]
+    }
   })
 }
 
