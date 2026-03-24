@@ -9,6 +9,8 @@ uniform float u_offset;
 uniform float u_mouseX;
 uniform float u_mouseY;
 uniform sampler2D u_img;
+uniform sampler2D u_perlin;
+uniform sampler2D u_bg;
 
 varying vec2 v_texcoord;
 
@@ -53,8 +55,8 @@ void main()
   vec2 blockCoords = vec2(xBlocks, yBlocks);
   
   vec2 distortionCoords = vec2(
-    coords.x + 0.02 * sin(u_time) - 0.1 * u_mouseX + 0.12,
-    coords.y + 0.04 * cos(u_time) + 0.1 * u_mouseY
+    coords.x + 0.02 * sin(u_time) - 0.15 * u_mouseX + 0.12,
+    coords.y + 0.04 * cos(u_time) + 0.15 * u_mouseY
   );
 
   // NOISE
@@ -81,11 +83,28 @@ void main()
 
   img += noise * noiseFactor;
 
+  // DISPLACEMENT WITH PERLIN
+
+  float displacementCoef = 0.4;
+
+  vec4 backgroundImg = texture2D(u_bg, coords);
+  vec4 perlinImg = texture2D(u_perlin, coords);
+
+  float displaceForce1 = perlinImg.r * u_offset * displacementCoef;
+  vec2 uvDisplaced1 = vec2(distortionCoords.x + displaceForce1, distortionCoords.y);
+  float displaceForce2 = perlinImg.r * (1.0 - u_offset) * displacementCoef;
+  vec2 uvDisplaced2 = vec2(coords.x - displaceForce2, coords.y);
+
+  vec4 displacedImgOmy = texture2D(u_img, uvDisplaced1);
+  vec4 displacedBG = texture2D(u_bg, uvDisplaced2);
+
+  vec4 finalImg = (displacedImgOmy * (1.0 - u_offset) + displacedBG * u_offset);
+
   float cubeBrightness = 0.8;
   float cylinderBrightness = 1.0;
   img.rgb *= cylinderBrightness;
 
-  gl_FragColor = img;
+  gl_FragColor = finalImg;
 }
 `
 export default disp_frag

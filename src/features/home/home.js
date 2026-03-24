@@ -10,7 +10,8 @@ function home() {
   const heroH = document.querySelector('.hero-h')
   const logoH = document.querySelector('.logo-h')
   const gallerySection = document.querySelector('.gallery__section')
-  const flashOverlay = document.querySelector('.flash__overlay')
+  const footerSection = document.querySelector('.footer__section')
+  // const flashOverlay = document.querySelector('.flash__overlay')
 
   window.addEventListener('pageIsPreloaded', () => {
     gsap.to([claimPs, servicesPs], {
@@ -33,20 +34,20 @@ function home() {
     })
   })
 
-  function flash() {
-    gsap.to(flashOverlay, {
-      opacity: 1,
-      duration: 0.02,
-      onComplete: () => {
-        gsap.to(flashOverlay, {
-          delay: 0.12,
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power2.out',
-        })
-      },
-    })
-  }
+  // function flash() {
+  //   gsap.to(flashOverlay, {
+  //     opacity: 1,
+  //     duration: 0.02,
+  //     onComplete: () => {
+  //       gsap.to(flashOverlay, {
+  //         delay: 0.12,
+  //         opacity: 0,
+  //         duration: 0.2,
+  //         ease: 'power2.out',
+  //       })
+  //     },
+  //   })
+  // }
 
   gsap.to(heroH, {
     scale: 0.12,
@@ -69,7 +70,17 @@ function home() {
     },
   })
 
-  window.addEventListener('click', flash)
+  gsap.to(gallerySection, {
+    y: -100,
+    scrollTrigger: {
+      trigger: footerSection,
+      start: 'top bottom',
+      end: 'top top',
+      scrub: 1.5,
+    },
+  })
+
+  // window.addEventListener('click', flash)
 }
 
 export default home

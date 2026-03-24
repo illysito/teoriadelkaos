@@ -38,53 +38,114 @@ function world() {
 
   // Main Image
   const imgLoader = new THREE.TextureLoader()
-  let imgPlane = null
-  imgLoader.load(
-    // githubToJsDelivr(
-    //   'https://github.com/illysito/teoriadelkaos/blob/de8b6cce72ec738387aa41fbe097f74cd8feff49/imgs/vivi.jpg'
-    // ),
+
+  const urls = [
     githubToJsDelivr(
       'https://github.com/illysito/teoriadelkaos/blob/1e8b8592e633968e12a5df2fb697411a2a0092fe/imgs/Omy4.jpg'
     ),
-    (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace
-      // texture.colorSpace = THREE.SRGBColorSpace
-      texture.minFilter = THREE.LinearFilter
-      texture.magFilter = THREE.LinearFilter
-      texture.generateMipmaps = false
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/17cec003107d6d13a4556ed21aec386397d058b9/imgs/PerlinOmy.jpg'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/teoriadelkaos/blob/17cec003107d6d13a4556ed21aec386397d058b9/imgs/OmyBlackBG.jpg'
+    ),
+  ]
 
-      // const distance = 2 // distance from camera
-      // const fov = camera.fov * (Math.PI / 180)
-      // const height = 2 * Math.tan(fov / 2) * distance
-      // const width = height * camera.aspect
-
-      const planeGeometry = new THREE.PlaneGeometry(0.75, 1)
-      // const planeMaterial = new THREE.MeshBasicMaterial({
-      //   map: texture,
-      //   // alphaTest: 0.1,
-      // })
-      const planeMaterial = new THREE.ShaderMaterial({
-        fragmentShader: disp_frag,
-        vertexShader: vert,
-        uniforms: {
-          u_time: { value: 0 },
-          u_resolution: { value: new THREE.Vector2(0.75, 1) },
-          u_offset: { value: 1 },
-          u_mouseX: { value: 0 },
-          u_mouseY: { value: 0 },
-          u_img: { value: texture },
+  function loadTexture(url) {
+    return new Promise((resolve, reject) => {
+      imgLoader.load(
+        url,
+        (texture) => {
+          texture.colorSpace = THREE.SRGBColorSpace
+          texture.minFilter = THREE.LinearFilter
+          texture.magFilter = THREE.LinearFilter
+          texture.generateMipmaps = false
+          resolve(texture)
         },
-      })
+        undefined,
+        reject
+      )
+    })
+  }
+  let imgPlane = null
 
-      imgPlane = new THREE.Mesh(planeGeometry, planeMaterial)
+  Promise.all(urls.map(loadTexture)).then(([omy, perlin, bg]) => {
+    const planeGeometry = new THREE.PlaneGeometry(0.75, 1)
 
-      // move it behind your sphere
-      let planeScale = 1.6 * 3
-      imgPlane.position.z = 0
-      imgPlane.scale.set(planeScale, planeScale, planeScale)
-      scene.add(imgPlane)
-    }
-  )
+    const planeMaterial = new THREE.ShaderMaterial({
+      fragmentShader: disp_frag,
+      vertexShader: vert,
+      uniforms: {
+        u_time: { value: 0 },
+        u_resolution: { value: new THREE.Vector2(0.75, 1) },
+        u_offset: { value: 0.5 },
+        u_mouseX: { value: 0 },
+        u_mouseY: { value: 0 },
+
+        u_img: { value: omy },
+        u_perlin: { value: perlin },
+        u_bg: { value: bg },
+
+        u_mix1: { value: 0.0 },
+        u_mix2: { value: 0.0 },
+      },
+    })
+
+    imgPlane = new THREE.Mesh(planeGeometry, planeMaterial)
+
+    const planeScale = 1.6 * 3
+    imgPlane.position.z = 0
+    imgPlane.position.x = -0.4
+    imgPlane.scale.set(planeScale, planeScale, planeScale)
+
+    scene.add(imgPlane)
+  })
+  // imgLoader.load(
+  //   // githubToJsDelivr(
+  //   //   'https://github.com/illysito/teoriadelkaos/blob/de8b6cce72ec738387aa41fbe097f74cd8feff49/imgs/vivi.jpg'
+  //   // ),
+  //   githubToJsDelivr(
+  //     'https://github.com/illysito/teoriadelkaos/blob/1e8b8592e633968e12a5df2fb697411a2a0092fe/imgs/Omy4.jpg'
+  //   ),
+  //   (texture) => {
+  //     texture.colorSpace = THREE.SRGBColorSpace
+  //     // texture.colorSpace = THREE.SRGBColorSpace
+  //     texture.minFilter = THREE.LinearFilter
+  //     texture.magFilter = THREE.LinearFilter
+  //     texture.generateMipmaps = false
+
+  //     // const distance = 2 // distance from camera
+  //     // const fov = camera.fov * (Math.PI / 180)
+  //     // const height = 2 * Math.tan(fov / 2) * distance
+  //     // const width = height * camera.aspect
+
+  //     const planeGeometry = new THREE.PlaneGeometry(0.75, 1)
+  //     // const planeMaterial = new THREE.MeshBasicMaterial({
+  //     //   map: texture,
+  //     //   // alphaTest: 0.1,
+  //     // })
+  //     const planeMaterial = new THREE.ShaderMaterial({
+  //       fragmentShader: disp_frag,
+  //       vertexShader: vert,
+  //       uniforms: {
+  //         u_time: { value: 0 },
+  //         u_resolution: { value: new THREE.Vector2(0.75, 1) },
+  //         u_offset: { value: 1 },
+  //         u_mouseX: { value: 0 },
+  //         u_mouseY: { value: 0 },
+  //         u_img: { value: texture },
+  //       },
+  //     })
+
+  //     imgPlane = new THREE.Mesh(planeGeometry, planeMaterial)
+
+  //     // move it behind your sphere
+  //     let planeScale = 1.6 * 3
+  //     imgPlane.position.z = 0
+  //     imgPlane.scale.set(planeScale, planeScale, planeScale)
+  //     scene.add(imgPlane)
+  //   }
+  // )
 
   // // Type
   // const typeLoader = new THREE.TextureLoader()
@@ -295,6 +356,36 @@ function world() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
+  })
+
+  // Transition OUT
+  window.addEventListener('transitionIsNeeded', () => {
+    console.log('event received')
+    gsap.to(imgPlane.material.uniforms.u_offset, {
+      delay: 0.2,
+      value: 1,
+      duration: 1.2,
+    })
+    gsap.to(imgPlane.position, {
+      delay: 0.2,
+      x: -1,
+      duration: 2.4,
+      ease: 'power2.in',
+    })
+  })
+
+  // Transition IN
+  window.addEventListener('pageIsPreloaded', () => {
+    console.log('event received')
+    gsap.to(imgPlane.material.uniforms.u_offset, {
+      value: 0,
+      duration: 1.2,
+    })
+    gsap.to(imgPlane.position, {
+      x: 0,
+      duration: 2.4,
+      ease: 'power2.inOut',
+    })
   })
 }
 

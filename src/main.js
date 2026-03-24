@@ -4,6 +4,7 @@ import home from './features/home/home'
 import mousemoveGallery from './features/home/mousemoveGallery'
 import parallax from './features/home/parallax'
 import preloader from './features/scripts/preloader'
+import transitionHome from './features/transitions/transitionHome'
 import world from './features/world/three'
 // import WorldHome from './features/world/worldHome'
 
@@ -14,4 +15,5 @@ preloader()
 world()
 parallax()
 mousemoveGallery()
+transitionHome()
 // new WorldHome()
