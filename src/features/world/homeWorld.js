@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import disp_frag from './shaders/fragShader'
 import vert from './shaders/vertexShader'
 
-function world() {
+function worldHome() {
   function githubToJsDelivr(permalink) {
     return permalink
       .replace('github.com', 'cdn.jsdelivr.net/gh')
@@ -389,4 +389,4 @@ function world() {
   })
 }
 
-export default world
+export default worldHome

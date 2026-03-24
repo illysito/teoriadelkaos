@@ -1,19 +1,39 @@
 import './styles/style.css'
 
-import home from './features/home/home'
-import mousemoveGallery from './features/home/mousemoveGallery'
-import parallax from './features/home/parallax'
-import preloader from './features/scripts/preloader'
-import transitionHome from './features/transitions/transitionHome'
-import world from './features/world/three'
-// import WorldHome from './features/world/worldHome'
-
 console.log('Teoria del Kaos - Omy ft. Illy `26')
 
-home()
-preloader()
-world()
-parallax()
-mousemoveGallery()
-transitionHome()
 // new WorldHome()
+async function runHomeFunctions() {
+  const { default: home } = await import('./features/home/home')
+  const { default: parallax } = await import('./features/home/parallax')
+  const { default: mousemoveGallery } = await import(
+    './features/home/mousemoveGallery'
+  )
+  const { default: preloader } = await import('./features/scripts/preloader')
+  const { default: transitionHome } = await import(
+    './features/transitions/transitionHome'
+  )
+  const { default: worldHome } = await import('./features/world/homeWorld')
+
+  home()
+  preloader()
+  worldHome()
+  parallax()
+  mousemoveGallery()
+  transitionHome()
+}
+
+async function runPhotoFunctions() {
+  console.log('photo!')
+}
+async function runFilmFunctions() {
+  console.log('film!')
+}
+async function runContactFunctions() {
+  console.log('contact!')
+}
+
+if (document.body.classList.contains('body__home')) runHomeFunctions()
+if (document.body.classList.contains('body__foto')) runPhotoFunctions()
+if (document.body.classList.contains('body__film')) runFilmFunctions()
+if (document.body.classList.contains('body__contact')) runContactFunctions()
