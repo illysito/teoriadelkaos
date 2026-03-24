@@ -277,7 +277,7 @@ function worldHome() {
   let isVisible = false
 
   let rotY = 0
-  let rotYVel = 0.08
+  let rotYVel = 0.06
 
   function lerp(a, b, t) {
     return a + (b - a) * t
@@ -290,7 +290,7 @@ function worldHome() {
     counter += 0.002
 
     // decay velocity
-    if (counter > 0.312) {
+    if (counter > 0.2) {
       rotYVel *= 0.996
       rotY += rotYVel
     }
