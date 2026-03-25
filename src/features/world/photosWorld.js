@@ -213,11 +213,11 @@ function worldPhoto() {
     gsap.to(imgPlane.material.uniforms.u_offset, {
       delay: 0.2,
       value: 0,
-      duration: 2.4,
+      duration: 1.2,
     })
     gsap.to(canvas, {
       opacity: 1,
-      duration: 1.2,
+      duration: 2.4,
       ease: 'power2.in',
     })
     gsap.to(imgPlane.position, {
