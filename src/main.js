@@ -26,9 +26,11 @@ async function runHomeFunctions() {
 async function runPhotoFunctions() {
   console.log('photo!')
   const { default: worldPhoto } = await import('./features/world/photosWorld')
+  const { default: photoIn } = await import('./features/photo/photoIn')
   const { default: photoScroll } = await import('./features/photo/photoScroll')
 
   worldPhoto()
+  photoIn()
   photoScroll()
 }
 async function runFilmFunctions() {
