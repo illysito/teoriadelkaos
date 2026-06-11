@@ -42,7 +42,7 @@ function worldPhoto() {
 
   const urls = [
     githubToJsDelivr(
-      'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/pescaos.jpg'
+      'https://github.com/illysito/teoriadelkaos/blob/1e8b8592e633968e12a5df2fb697411a2a0092fe/imgs/Omy4.jpg'
     ),
     githubToJsDelivr(
       'https://github.com/illysito/teoriadelkaos/blob/0072d68614869c3df910f776a27c7edacd3d75dd/imgs/vivi2.jpg'
